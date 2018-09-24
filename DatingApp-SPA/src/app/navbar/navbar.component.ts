@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
+import { AlertifyService } from '../_services/alertify.service';
 
 @Component({
   selector: 'app-navbar',
@@ -8,30 +9,41 @@ import { AuthService } from '../_services/auth.service';
 })
 export class NavbarComponent implements OnInit {
   model: any = {};
+  loggedInUserName: string;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private alertify: AlertifyService) { }
 
   ngOnInit() {
+    this.update_Logged_In_User_Name();
   }
 
   login() {
     this.authService.login(this.model).subscribe(next => {
-      console.log('Login successfully.');  
+      this.alertify.successMsg('Logged in successfully.');
+
+      this.update_Logged_In_User_Name();
     }, error => {
-      console.log(error);
+      this.alertify.errorMsg(error);
     });
 
-    console.log(this.model);
   }
 
   loggedIn() {
-    const token = localStorage.getItem('token');
-    return !!token; // If token is not empty --> return True Else return False.
+    return this.authService.loggedIn();
   }
 
   logout() {
     localStorage.removeItem('token');
-    console.log('Logged out.');
+    this.alertify.normalMsg('Logged out.');
   }
 
+  get_Logged_In_User_Name() {
+    return this.authService.get_Logged_In_User_Name();
+  }
+
+  update_Logged_In_User_Name() {
+    this.loggedInUserName = '';
+    if (this.loggedIn)
+      this.loggedInUserName = this.authService.get_Logged_In_User_Name();
+  }
 }
