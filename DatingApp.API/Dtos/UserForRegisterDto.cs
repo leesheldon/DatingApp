@@ -6,8 +6,8 @@ namespace DatingApp.API.Dtos
     {        
         [Required]
         [StringLength(50, 
-        MinimumLength = 5,
-        ErrorMessage = "You must specify user name between 5 and 50 characters.")]
+        MinimumLength = 2,
+        ErrorMessage = "You must specify user name between 2 and 50 characters.")]
         public string UserName { get; set; }
 
         [Required]
