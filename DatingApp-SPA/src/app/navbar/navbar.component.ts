@@ -10,7 +10,8 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent implements OnInit {
   model: any = {};
-  loggedInUserName: string;
+  currentUserName: string;
+  currentPhotoUrl: string;
 
   constructor(
     private authService: AuthService, 
@@ -18,14 +19,16 @@ export class NavbarComponent implements OnInit {
     private router: Router) { }
 
   ngOnInit() {
-    this.update_Logged_In_User_Name();
+    this.setCurrentUserName();
+    
+    this.authService.currentPhotoUrl.subscribe(p => this.currentPhotoUrl = p);
   }
 
   login() {
     this.authService.login(this.model).subscribe(next => {
       this.alertify.successMsg('Logged in successfully.');
 
-      this.update_Logged_In_User_Name();
+      this.setCurrentUserName();
     }, error => {
       this.alertify.errorMsg(error);
     }, () => {
@@ -40,18 +43,20 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    this.authService.decodedToken = null;
+    this.authService.currentUser = null;
+
     this.alertify.normalMsg('Logged out.');
 
     this.router.navigate(['/home']);
   }
 
-  get_Logged_In_User_Name() {
-    return this.authService.get_Logged_In_User_Name();
-  }
-
-  update_Logged_In_User_Name() {
-    this.loggedInUserName = '';
-    if (this.loggedIn)
-      this.loggedInUserName = this.authService.get_Logged_In_User_Name();
+  setCurrentUserName() {
+    this.currentUserName = '';
+    if (this.loggedIn()) {
+      this.currentUserName = this.authService.currentUser.userName;
+    }
+      
   }
 }

@@ -15,8 +15,11 @@
     </ul>
   
     <div *ngIf="loggedIn()" class="dropdown" dropdown>
+      <span class="mr-1">
+        <img src="{{currentPhotoUrl}}" alt="">
+      </span>
       <a class="dropdown-toggle text-light" dropdownToggle>
-        Welcome {{ loggedInUserName | titlecase }}
+        Welcome {{ currentUserName | titlecase }}
       </a>
     
       <div class="dropdown-menu mt-3" *dropdownMenu>
