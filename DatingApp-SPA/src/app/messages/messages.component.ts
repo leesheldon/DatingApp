@@ -30,12 +30,22 @@ export class MessagesComponent implements OnInit {
     })
   }
 
+  changeContainer() {    
+    let tmp = this.pagination.currentPage;
+
+    this.pagination.currentPage = 1;
+
+    if (tmp === 1) {
+      this.loadMessages();  
+    }
+  }
+
   loadMessages() {
     this.messages = [];
     
     this.userService.getMessages(this.authService.decodedToken.nameid,
         this.pagination.currentPage, this.pagination.itemsPerPage, this.messageContainer)
-        .subscribe((res: PaginatedResult<Message[]>) => {
+        .subscribe((res: PaginatedResult<Message[]>) => {          
           this.messages = res.result;
           this.pagination = res.pagination;
         }, error => {
@@ -55,7 +65,7 @@ export class MessagesComponent implements OnInit {
     });
   }
 
-  pageChanged(event: any) {
+  pageChanged(event: any) {    
     this.pagination.currentPage = event.page;
     this.loadMessages();
   }
